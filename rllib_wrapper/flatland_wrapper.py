@@ -46,11 +46,10 @@ class FlatlandEnv(rllib.env.MultiAgentEnv):
             schedule_generator=sparse_schedule_generator(speed_ration_map),
             number_of_agents=self.n_agents,
             malfunction_generator_and_process_data=malfunction_from_params(stochastic_data),
-            # Malfunction data generator
             obs_builder_object=TreeObservation
         )
 
-        self.env_renderer = RenderTool(self.env, gl="PILSVG", )
+        # self.env_renderer = RenderTool(self.env, gl="PILSVG", )
 
         self.action_space = gym.spaces.Discrete(5)
         self.observation_space = np.zeros((1, 231))
@@ -58,13 +57,13 @@ class FlatlandEnv(rllib.env.MultiAgentEnv):
     def reset(self):
         self.agents_done = []
         obs = self.env.reset()
-        self.env_renderer.reset()
+        # self.env_renderer.reset()
         # print('================= RESET', obs)
         return obs[0]
 
     def step(self, action_dict):
         obs, rewards, dones, infos = self.env.step(action_dict)
-        self.env_renderer.render_env(show=True, show_predictions=False, show_observations=True)
+        # self.env_renderer.render_env(show=True, show_predictions=False, show_observations=True)
         # return <obs>, <reward: float>, <done: bool>, <info: dict>
 
         d = dict()
@@ -78,8 +77,8 @@ class FlatlandEnv(rllib.env.MultiAgentEnv):
                 r[a] = rewards[a]
                 d[a] = dones[a]
                 i[a] = {'mario': a}
-                if dones[a]:
-                    print('DONE', a)
+                # if dones[a]:
+                #     print('DONE', a)
         d['__all__'] = dones['__all__']
 
         # print('================= STEP', action_dict, d)
@@ -88,3 +87,6 @@ class FlatlandEnv(rllib.env.MultiAgentEnv):
                 self.agents_done.append(agent)
 
         return  o, r, d, i
+    
+    def get_num_agents():
+        return self.n_agents

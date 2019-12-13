@@ -7,8 +7,10 @@ import ray
 from ray.rllib.agents.ppo.ppo import PPOTrainer
 from ray.rllib.models import ModelCatalog
 
+import rllib_wrapper.callbacks as cb
 from rllib_wrapper.flatland_wrapper import FlatlandEnv
 from rllib_wrapper.custom_preprocessor import TreeObsPreprocessor
+
 
 ModelCatalog.register_custom_preprocessor("tree_obs_prep", TreeObsPreprocessor)
 ray.init()
@@ -19,16 +21,16 @@ trainer = PPOTrainer(env=FlatlandEnv, config={
     "train_batch_size": 4000,
     "model": {
         "custom_preprocessor": "tree_obs_prep"
+    },
+    "callbacks": {
+        "on_episode_start": cb.on_episode_start,     # arg: {"env": .., "episode": ...}
+        "on_episode_end": cb.on_episode_end,       # arg: {"env": .., "episode": ...}
+        "on_train_result": cb.on_train_result,      # arg: {"trainer": ..., "result": ...}
     }
-    # "callbacks": {
-    #     "on_episode_start": None,     # arg: {"env": .., "episode": ...}
-    #     "on_episode_end": None,       # arg: {"env": .., "episode": ...}
-    #     "on_train_result": None,      # arg: {"trainer": ..., "result": ...}
-    # }
 })
 
 for i in range(10000):
     print("=========== Iteration ", i, " ===========")
-    print("ITE ", i, " --", trainer.train())
+    trainer.train()
 
 print("TRAINING COMPLETED SUCCESSFULLY")
