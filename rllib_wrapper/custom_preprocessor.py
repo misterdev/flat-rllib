@@ -1,8 +1,7 @@
 import numpy as np
 from ray.rllib.models.preprocessors import Preprocessor
 
-from observation_utils import normalize_observation
-
+from rllib_wrapper.observation_utils import normalize_observation
 class TreeObsPreprocessor(Preprocessor):
     def _init_shape(self, obs_space, options):
         self.step_memory = 2 # TODO options["custom_options"]["step_memory"]

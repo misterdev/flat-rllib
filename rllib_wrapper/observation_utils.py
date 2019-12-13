@@ -1,7 +1,6 @@
 import numpy as np
 from flatland.envs.observations import TreeObsForRailEnv
 
-
 def max_lt(seq, val):
     """
     Return greatest item in seq for which item < val applies.
