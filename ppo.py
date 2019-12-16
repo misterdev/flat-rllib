@@ -11,7 +11,6 @@ import rllib_wrapper.callbacks as cb
 from rllib_wrapper.flatland_wrapper import FlatlandEnv
 from rllib_wrapper.custom_preprocessor import TreeObsPreprocessor
 
-
 ModelCatalog.register_custom_preprocessor("tree_obs_prep", TreeObsPreprocessor)
 ray.init()
 
@@ -23,14 +22,15 @@ trainer = PPOTrainer(env=FlatlandEnv, config={
         "custom_preprocessor": "tree_obs_prep"
     },
     "callbacks": {
-        "on_episode_start": cb.on_episode_start,     # arg: {"env": .., "episode": ...}
+        # "on_episode_start": cb.on_episode_start,     # arg: {"env": .., "episode": ...}
         "on_episode_end": cb.on_episode_end,       # arg: {"env": .., "episode": ...}
         "on_train_result": cb.on_train_result,      # arg: {"trainer": ..., "result": ...}
-    }
+    },
+    "log_level": "ERROR"
 })
 
-for i in range(10000):
-    print("=========== Iteration ", i, " ===========")
-    trainer.train()
+for i in range(100000):
+    # print("=========== Iteration ", i, " ===========")
+    print(trainer.train())
 
 print("TRAINING COMPLETED SUCCESSFULLY")

@@ -6,28 +6,32 @@ from flatland.envs.agent_utils import RailAgentStatus
 # scores = []
 # dones_list = []
 
-def on_episode_start(info):
-    env = info['env']
-    # Collection information about training
-    tasks_finished = 0
-    for current_agent in env.agents:
-        if current_agent.status == RailAgentStatus.DONE_REMOVED:
-            tasks_finished += 1
-    # done_window.append(tasks_finished / max(1, env.get_num_agents()))
-    # # scores_window.append(score)  # TODO / max_steps save most recent score
-    # scores.append(np.mean(scores_window))
-    # dones_list.append((np.mean(done_window)))
-    print('HERMANO', env)
-    # print(
-    #     '\rTraining {} Agents on ({},{}).\t Episode {}\t Average Score: {:.3f}\tDones: {:.2f}%\tEpsilon: {:.2f} \t Action Probabilities: \t {}'.format(
-    #         env.get_num_agents(), x_dim, y_dim,
-    #         trials,
-    #         np.mean(scores_window),
-    #         100 * np.mean(done_window),
-    #         eps, action_prob / np.sum(action_prob)), end=" ")
+# def on_episode_start(info):
+#     print('')
 
 def on_episode_end(info):
-    print("ciao")
+    episode = info['episode']
+
+    # Calculation of a custom score metric: cum of all accumulated rewards, divided by the number of agents
+    # and the number of the maximum time steps of the episode.
+    score = 0
+    for k, v in episode._agent_reward_history.items():
+        score += np.sum(v)
+    score /= len(episode._agent_reward_history) # TODO * episode.horizon) AND WTF
+
+    # Calculation of the proportion of solved episodes before the maximum time step
+    done = 1
+    # if len(episode._agent_reward_history[0]) == episode.horizon:
+    #     done = 0
+    episode.custom_metrics["score"] = score
+    episode.custom_metrics["proportion_episode_solved"] = done
 
 def on_train_result(info):
-    print("on_train_result")
+    n_agents = 10
+    x_dim = y_dim = 35
+    print(
+    '\rTraining {} Agents on ({},{}).\t Episode {}\t Average Score: {:.3f}'.format(
+        n_agents, x_dim, y_dim,
+        info['result']['episodes_total'],
+        info['result']['custom_metrics']['score_mean']
+    ))

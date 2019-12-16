@@ -65,7 +65,6 @@ class FlatlandEnv(rllib.env.MultiAgentEnv):
         obs, rewards, dones, infos = self.env.step(action_dict)
         # self.env_renderer.render_env(show=True, show_predictions=False, show_observations=True)
         # return <obs>, <reward: float>, <done: bool>, <info: dict>
-
         d = dict()
         r = dict()
         o = dict()
@@ -76,9 +75,11 @@ class FlatlandEnv(rllib.env.MultiAgentEnv):
                 o[a] = obs[a]
                 r[a] = rewards[a]
                 d[a] = dones[a]
-                i[a] = {'mario': a}
+                i[a] = dict()
+                for info in infos:
+                    i[a][info] = infos[info][a]
                 # if dones[a]:
-                #     print('DONE', a)
+                #     print('DONE', a, infos)
         d['__all__'] = dones['__all__']
 
         # print('================= STEP', action_dict, d)
