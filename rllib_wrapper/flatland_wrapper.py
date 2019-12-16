@@ -37,12 +37,14 @@ class FlatlandEnv(rllib.env.MultiAgentEnv):
         self.env = RailEnv(
             width=width,
             height=height,
-            rail_generator=sparse_rail_generator(max_num_cities=3,
-                                                # Number of cities in map (where train stations are)
-                                                seed=1,  # Random seed
-                                                grid_mode=False,
-                                                max_rails_between_cities=2,
-                                                max_rails_in_city=3),
+            rail_generator=sparse_rail_generator(
+                max_num_cities=3,
+                # Number of cities in map (where train stations are)
+                seed=1,  # Random seed
+                grid_mode=False,
+                max_rails_between_cities=2,
+                max_rails_in_city=3,
+            ),
             schedule_generator=sparse_schedule_generator(speed_ration_map),
             number_of_agents=self.n_agents,
             malfunction_generator_and_process_data=malfunction_from_params(stochastic_data),
@@ -70,8 +72,7 @@ class FlatlandEnv(rllib.env.MultiAgentEnv):
         o = dict()
         i = dict()
         for a in range(len(self.env.agents)):
-            if a not in self.agents_done:
-                # data, distance, agent_data = self.env.obs_builder.split_tree(tree=np.array(obs[a]), current_depth=0)                
+            if a not in self.agents_done:            
                 o[a] = obs[a]
                 r[a] = rewards[a]
                 d[a] = dones[a]
@@ -79,7 +80,7 @@ class FlatlandEnv(rllib.env.MultiAgentEnv):
                 for info in infos:
                     i[a][info] = infos[info][a]
                 # if dones[a]:
-                #     print('DONE', a, infos)
+                    # print('DONE', a, infos)
         d['__all__'] = dones['__all__']
 
         # print('================= STEP', action_dict, d)
@@ -87,6 +88,7 @@ class FlatlandEnv(rllib.env.MultiAgentEnv):
             if done and agent != '__all__':
                 self.agents_done.append(agent)
 
+        # print('STEP', action_dict, r, d)
         return  o, r, d, i
     
     def get_num_agents():

@@ -16,7 +16,7 @@ ray.init()
 
 # Configurations https://ray.readthedocs.io/en/latest/rllib-training.html
 trainer = PPOTrainer(env=FlatlandEnv, config={
-    # "num_workers": 2,
+    "num_workers": 1,
     "train_batch_size": 4000,
     "model": {
         "custom_preprocessor": "tree_obs_prep"
@@ -29,8 +29,11 @@ trainer = PPOTrainer(env=FlatlandEnv, config={
     "log_level": "ERROR"
 })
 
-for i in range(100000):
+for i in range(100000 + 2):
     # print("=========== Iteration ", i, " ===========")
-    print(trainer.train())
+    trainer.train()
+    if i % 100 == 0:
+        checkpoint = trainer.save()
+        print("checkpoint saved at", checkpoint)
 
 print("TRAINING COMPLETED SUCCESSFULLY")
