@@ -1,4 +1,4 @@
-name: flatland-rllib
+name: flat-rllib
 channels:
   - pytorch
   - defaults

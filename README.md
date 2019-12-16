@@ -10,6 +10,6 @@ conda env create -f environment.yml
 
 ## Run
 ```
-conda activate flatland-rllib
+conda activate flat-rllib
 python ppo.py
 ```
