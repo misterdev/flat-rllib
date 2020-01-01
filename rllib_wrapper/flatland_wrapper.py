@@ -16,6 +16,7 @@ class FlatlandEnv(rllib.env.MultiAgentEnv):
         height = 35
         self.n_agents = 2
         self.tree_depth = 3
+        self.n_episode = 0
 
         TreeObservation = TreeObsForRailEnv(max_depth=2)
 
@@ -60,7 +61,8 @@ class FlatlandEnv(rllib.env.MultiAgentEnv):
         self.agents_done = []
         obs = self.env.reset()
         # self.env_renderer.reset()
-        # print('================= RESET', obs)
+        self.n_episode += 1
+        # print('================= RESET')
         return obs[0]
 
     def step(self, action_dict):
@@ -84,12 +86,10 @@ class FlatlandEnv(rllib.env.MultiAgentEnv):
         d['__all__'] = dones['__all__']
 
         # print('================= STEP', action_dict, d)
-        for agent, done in dones.items():
-            if done and agent != '__all__':
-                self.agents_done.append(agent)
+        if (self.env._elapsed_steps < self.env._max_episode_steps):
+            for agent, done in d.items():
+                if done and agent != '__all__':
+                    self.agents_done.append(agent)
 
         # print('STEP', action_dict, r, d)
         return  o, r, d, i
-    
-    def get_num_agents():
-        return self.n_agents
