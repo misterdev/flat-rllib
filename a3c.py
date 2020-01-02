@@ -4,7 +4,7 @@ base_dir = Path(__file__).resolve().parent.parent
 sys.path.append(str(base_dir))
 
 import ray
-from ray.rllib.agents.ppo.ppo import PPOTrainer
+from ray.rllib.agents.a3c.a3c import A3CTrainer
 from ray.rllib.models import ModelCatalog
 
 import rllib_wrapper.callbacks as cb
@@ -15,9 +15,8 @@ ModelCatalog.register_custom_preprocessor("tree_obs_prep", TreeObsPreprocessor)
 ray.init()
 
 # Configurations https://ray.readthedocs.io/en/latest/rllib-training.html
-trainer = PPOTrainer(env=FlatlandEnv, config={
-    "num_workers": 1,
-    "train_batch_size": 4000,
+trainer = A3CTrainer(env=FlatlandEnv, config={
+    "num_workers": 3,
     "model": {
         "custom_preprocessor": "tree_obs_prep"
     },
@@ -29,11 +28,11 @@ trainer = PPOTrainer(env=FlatlandEnv, config={
     "log_level": "ERROR"
 })
 
-for i in range(100000):
+for i in range(100000 + 2):
     # print("=========== Iteration ", i, " ===========")
     trainer.train()
-    if i % 1000 == 0:
-        checkpoint = trainer.save()
-        print("checkpoint saved at", checkpoint)
+    # if i % 1000 == 0:
+    #     checkpoint = trainer.save()
+    #     print("checkpoint saved at", checkpoint)
 
 print("TRAINING COMPLETED SUCCESSFULLY")
